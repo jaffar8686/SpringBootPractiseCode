@@ -1,6 +1,11 @@
+FROM maven:latest as maven
+WORKDIR /app
+COPY . /app
+RUN mvn package
+
 
 FROM openjdk:11
-
-ADD target/springbootdemo.0.0.1-SNAPSHOT.jar demo.jar
-
-ENTRYPOINT ["java" ,"-jar","/demo.jar"]
+WORKDIR /app
+COPY --from=maven /app/target/springbootdemo-0.0.1-SNAPSHOT.jar /app/target/demo.jar
+EXPOSE 8181
+ENTRYPOINT ["java" ,"-jar","/app/target/demo.jar"]
